@@ -1,0 +1,5 @@
+{
+  "name": "Meeting Insights Extractor",
+  "description": "An application to transcribe audio from meetings and use AI models to generate summaries and actionable tasks from the transcript.",
+  "requestFramePermissions": []
+}
