@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => {
       "process.env.AZURE_OPENAI_ENDPOINT": JSON.stringify(
         env.AZURE_OPENAI_ENDPOINT
       ),
+      "process.env.ZOOM_CLIENT_ID": JSON.stringify(env.ZOOM_CLIENT_ID),
+      "process.env.ZOOM_CLIENT_SECRET": JSON.stringify(env.ZOOM_CLIENT_SECRET),
+      "process.env.ZOOM_ACCOUNT_ID": JSON.stringify(env.ZOOM_ACCOUNT_ID),
     },
     resolve: {
       alias: {

@@ -2,7 +2,7 @@ export interface Model {
   id: string;
   name: string;
   description: string;
-  provider: "gemini" | "azure" | "simulated";
+  provider: "gemini" | "azure" | "simulated" | "zoom";
 }
 
 export interface SummaryResult {
@@ -12,7 +12,11 @@ export interface SummaryResult {
 
   // New structured sections
   overview?: string; // 2-3 sentence executive summary
-  keyTakeaways?: string[]; // 4-7 bullets
-  nextSteps?: string[]; // actionable items (may include assignees in text)
-  keyTopics?: string[]; // 5-8 concise topic phrases
+  toDoList?: ToDoItem[]; // Combined takeaways and next steps, sorted by person
+}
+
+export interface ToDoItem {
+  person: string; // Person assigned to the task
+  task: string; // The actual task description
+  type: "takeaway" | "action"; // Whether it's a key takeaway or actionable step
 }

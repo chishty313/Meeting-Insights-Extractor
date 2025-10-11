@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { parseVTTContent } from "../services/vttParser";
 
 interface TranscriptInputProps {
   value: string;
@@ -11,9 +12,32 @@ const TranscriptInput: React.FC<TranscriptInputProps> = ({
 }) => {
   const handleFile = useCallback(
     async (file: File) => {
-      if (file && (file.type === "text/plain" || file.name.endsWith(".txt"))) {
+      if (
+        file &&
+        (file.type === "text/plain" ||
+          file.name.endsWith(".txt") ||
+          file.name.endsWith(".vtt") ||
+          file.type === "text/vtt")
+      ) {
         const text = await file.text();
-        onChange(text);
+
+        // Check if it's a VTT file
+        if (
+          file.name.endsWith(".vtt") ||
+          file.type === "text/vtt" ||
+          text.includes("WEBVTT")
+        ) {
+          try {
+            const parsedTranscript = parseVTTContent(text, true); // Include timestamps
+            onChange(parsedTranscript);
+          } catch (error) {
+            console.error("Error parsing VTT file:", error);
+            // Fallback to raw text if VTT parsing fails
+            onChange(text);
+          }
+        } else {
+          onChange(text);
+        }
       }
     },
     [onChange]
@@ -29,31 +53,31 @@ const TranscriptInput: React.FC<TranscriptInputProps> = ({
       <div className="flex items-center justify-between">
         <label
           htmlFor="transcript-text"
-          className="block text-sm font-medium text-slate-300"
+          className="block text-sm font-semibold text-gray-700"
         >
           Transcript
         </label>
-        <label className="text-sm text-cyan-400 hover:underline cursor-pointer">
+        <label className="text-sm text-blue-600 hover:text-blue-700 hover:underline cursor-pointer transition-colors">
           <input
             type="file"
-            accept=".txt,text/plain"
+            accept=".txt,.vtt,text/plain,text/vtt"
             className="hidden"
             onChange={onFileChange}
           />
-          Upload .txt
+          Upload .txt/.vtt
         </label>
       </div>
       <textarea
         id="transcript-text"
-        rows={8}
-        className="mt-1 block w-full text-base bg-slate-900 border-slate-700 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm rounded-md text-white p-3"
-        placeholder="Paste your transcript here (optionally with Speaker 1:, Speaker 2: labels)"
+        rows={10}
+        className="w-full text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl p-4 border border-gray-300 bg-white text-gray-900 hover:border-blue-300 transition-colors resize-none"
+        placeholder="Paste your transcript here or upload .txt/.vtt files (optionally with Speaker 1:, Speaker 2: labels)"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <p className="text-xs text-slate-500">
-        Tip: If your transcript already has speaker labels (e.g., "Speaker 1:"),
-        we will keep them.
+      <p className="text-xs text-gray-500">
+        Tip: Upload .vtt files from Zoom or other sources. If your transcript
+        already has speaker labels (e.g., "Speaker 1:"), we will keep them.
       </p>
     </div>
   );

@@ -12,26 +12,33 @@ const responseSchema = {
       description:
         "A 2-3 sentence executive summary capturing focus and primary outcomes.",
     },
-    keyTakeaways: {
+    toDoList: {
       type: Type.ARRAY,
       description:
-        "4-7 bullets of important decisions/agreements phrased as The team ...",
-      items: { type: Type.STRING },
-    },
-    nextSteps: {
-      type: Type.ARRAY,
-      description:
-        "Action items with assignee name (or To be Assigned) and clear task.",
-      items: { type: Type.STRING },
-    },
-    keyTopics: {
-      type: Type.ARRAY,
-      description:
-        "5-8 concise topic phrases (3-7 words) with labels like Update/Decision/Idea.",
-      items: { type: Type.STRING },
+        "Combined key takeaways and action items, organized by person. Each item should be formatted as 'Person Name: Task/Decision description' and sorted by person alphabetically.",
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          person: {
+            type: Type.STRING,
+            description:
+              "Name of the person responsible (or 'To be Assigned' if unclear)",
+          },
+          task: {
+            type: Type.STRING,
+            description: "The task or decision description",
+          },
+          type: {
+            type: Type.STRING,
+            description: "Whether this is a key takeaway or actionable step",
+            enum: ["takeaway", "action"],
+          },
+        },
+        required: ["person", "task", "type"],
+      },
     },
   },
-  required: ["overview", "keyTakeaways", "nextSteps", "keyTopics"],
+  required: ["overview", "toDoList"],
 };
 
 export const summarizeAndExtractTasks = async (
@@ -45,7 +52,7 @@ export const summarizeAndExtractTasks = async (
     );
   }
 
-  const prompt = `Please analyze the following meeting transcript and provide EXACTLY the following JSON fields matching the response schema: overview, keyTakeaways, nextSteps, keyTopics. Do not include any extra fields or commentary.\n\nTranscript:\n---\n${transcript}\n---`;
+  const prompt = `Please analyze the following meeting transcript and provide EXACTLY the following JSON fields matching the response schema: overview, toDoList. The toDoList should combine both key takeaways and action items, organized by person alphabetically. Do not include any extra fields or commentary.\n\nTranscript:\n---\n${transcript}\n---`;
 
   try {
     const config: {
@@ -75,9 +82,7 @@ export const summarizeAndExtractTasks = async (
     if (
       parsedJson &&
       typeof parsedJson.overview === "string" &&
-      Array.isArray(parsedJson.keyTakeaways) &&
-      Array.isArray(parsedJson.nextSteps) &&
-      Array.isArray(parsedJson.keyTopics)
+      Array.isArray(parsedJson.toDoList)
     ) {
       return parsedJson as SummaryResult;
     } else {
@@ -117,5 +122,35 @@ export const labelSpeakersWithGemini = async (
   } catch (error) {
     console.error("Error labeling speakers with Gemini:", error);
     throw new Error("Failed to label speakers with Gemini.");
+  }
+};
+
+// Function to add timestamps using Gemini
+export const addTimestampsWithGemini = async (
+  transcript: string,
+  model: string,
+  prompt: string
+): Promise<string> => {
+  if (!ai) {
+    throw new Error(
+      "Gemini API key is not configured. Please set the GEMINI_API_KEY environment variable."
+    );
+  }
+
+  try {
+    const fullPrompt = `${prompt}\n\n${transcript}`;
+
+    const result = await ai.models.generateContent({
+      model: model,
+      contents: fullPrompt,
+      config: {
+        temperature: 0.2,
+      },
+    });
+
+    return result.text.trim() || transcript;
+  } catch (error) {
+    console.error("Error adding timestamps with Gemini:", error);
+    throw error;
   }
 };

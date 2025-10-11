@@ -1,5 +1,5 @@
-import React from 'react';
-import type { Model } from '../types';
+import React from "react";
+import type { Model } from "../types";
 
 interface ModelSelectorProps {
   label: string;
@@ -10,10 +10,20 @@ interface ModelSelectorProps {
   disabled?: boolean;
 }
 
-const ModelSelector: React.FC<ModelSelectorProps> = ({ label, models, selectedValue, onChange, helpText, disabled = false }) => {
+const ModelSelector: React.FC<ModelSelectorProps> = ({
+  label,
+  models,
+  selectedValue,
+  onChange,
+  helpText,
+  disabled = false,
+}) => {
   return (
-    <div>
-      <label htmlFor={label} className="block text-sm font-medium text-slate-300">
+    <div className="space-y-2">
+      <label
+        htmlFor={label}
+        className="block text-sm font-semibold text-gray-700"
+      >
         {label}
       </label>
       <select
@@ -21,7 +31,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ label, models, selectedVa
         value={selectedValue}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-slate-900 border-slate-700 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm rounded-md text-white disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed"
+        className="w-full h-11 pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl border border-gray-300 bg-white text-gray-900 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
       >
         {models.length > 0 ? (
           models.map((model) => (
@@ -33,7 +43,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ label, models, selectedVa
           <option value="">No models configured</option>
         )}
       </select>
-      {helpText && <p className="mt-2 text-sm text-slate-500">{helpText}</p>}
+      {helpText && <p className="text-sm text-gray-500">{helpText}</p>}
     </div>
   );
 };

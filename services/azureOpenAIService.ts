@@ -48,7 +48,7 @@ if (!AZURE_API_KEY || !AZURE_BASE_URL) {
   );
 }
 
-// Function to transcribe audio using Azure Whisper
+// Function to transcribe audio using Azure Whisper with timestamps
 export const transcribeWithAzureWhisper = async (
   audioFile: File
 ): Promise<string> => {
@@ -74,7 +74,10 @@ export const transcribeWithAzureWhisper = async (
       `Azure Whisper API request failed: ${response.statusText} - ${errorText}`
     );
   }
+
   const data = await response.json();
+  console.log("Azure Whisper response:", data);
+
   return data.text || "";
 };
 
@@ -155,7 +158,7 @@ export const summarizeWithAzureOpenAI = async (
     function: {
       name: "extract_meeting_insights",
       description:
-        "Extracts structured meeting insights including Overview, Key Takeaways, Next Steps, and Key Topics.",
+        "Extracts structured meeting insights including Overview and To-Do List organized by person.",
       parameters: {
         type: "object",
         properties: {
@@ -164,26 +167,34 @@ export const summarizeWithAzureOpenAI = async (
             description:
               "A 2-3 sentence executive summary capturing focus and primary outcomes.",
           },
-          keyTakeaways: {
+          toDoList: {
             type: "array",
             description:
-              "4-7 bullets of important decisions/agreements phrased as The team ...",
-            items: { type: "string" },
-          },
-          nextSteps: {
-            type: "array",
-            description:
-              "Action items with assignee name (or To be Assigned) and clear task.",
-            items: { type: "string" },
-          },
-          keyTopics: {
-            type: "array",
-            description:
-              "5-8 concise topic phrases (3-7 words) with labels like Update/Decision/Idea.",
-            items: { type: "string" },
+              "Combined key takeaways and action items, organized by person. Each item should be formatted as 'Person Name: Task/Decision description' and sorted by person alphabetically.",
+            items: {
+              type: "object",
+              properties: {
+                person: {
+                  type: "string",
+                  description:
+                    "Name of the person responsible (or 'To be Assigned' if unclear)",
+                },
+                task: {
+                  type: "string",
+                  description: "The task or decision description",
+                },
+                type: {
+                  type: "string",
+                  enum: ["takeaway", "action"],
+                  description:
+                    "Whether this is a key takeaway or actionable step",
+                },
+              },
+              required: ["person", "task", "type"],
+            },
           },
         },
-        required: ["overview", "keyTakeaways", "nextSteps", "keyTopics"],
+        required: ["overview", "toDoList"],
       },
     },
   };
@@ -235,14 +246,8 @@ export const summarizeWithAzureOpenAI = async (
           typeof parsedArgs.overview === "string"
             ? parsedArgs.overview
             : undefined,
-        keyTakeaways: Array.isArray(parsedArgs.keyTakeaways)
-          ? parsedArgs.keyTakeaways
-          : undefined,
-        nextSteps: Array.isArray(parsedArgs.nextSteps)
-          ? parsedArgs.nextSteps
-          : undefined,
-        keyTopics: Array.isArray(parsedArgs.keyTopics)
-          ? parsedArgs.keyTopics
+        toDoList: Array.isArray(parsedArgs.toDoList)
+          ? parsedArgs.toDoList
           : undefined,
       };
       return result;
