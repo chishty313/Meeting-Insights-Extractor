@@ -11,7 +11,7 @@ export const getEnvVar = (key: string, defaultValue: string = ""): string => {
     // Client-side: variables are injected by Vite
     return (window as any).__ENV__?.[key] || defaultValue;
   }
-  
+
   // Server-side: use process.env
   return process.env[key] || defaultValue;
 };
@@ -21,10 +21,10 @@ export const env = {
   // Azure OpenAI
   AZURE_OPENAI_API_KEY: getEnvVar("AZURE_OPENAI_API_KEY"),
   AZURE_OPENAI_ENDPOINT: getEnvVar("AZURE_OPENAI_ENDPOINT"),
-  
+
   // Google Gemini
   GEMINI_API_KEY: getEnvVar("GEMINI_API_KEY"),
-  
+
   // Zoom API
   ZOOM_CLIENT_ID: getEnvVar("ZOOM_CLIENT_ID"),
   ZOOM_CLIENT_SECRET: getEnvVar("ZOOM_CLIENT_SECRET"),

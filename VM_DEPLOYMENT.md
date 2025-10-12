@@ -35,6 +35,7 @@ nano .env
 ```
 
 Add your environment variables:
+
 ```env
 # Azure OpenAI (Required)
 AZURE_OPENAI_API_KEY=your_azure_openai_api_key_here
@@ -121,6 +122,7 @@ sudo nano /etc/nginx/sites-available/meeting-insights-extractor
 ```
 
 Add this configuration:
+
 ```nginx
 server {
     listen 80;
@@ -149,6 +151,7 @@ server {
 ```
 
 Enable the site:
+
 ```bash
 # Enable the site
 sudo ln -s /etc/nginx/sites-available/meeting-insights-extractor /etc/nginx/sites-enabled/
@@ -175,6 +178,7 @@ sudo nano /etc/apache2/sites-available/meeting-insights-extractor.conf
 ```
 
 Add this configuration:
+
 ```apache
 <VirtualHost *:80>
     ServerName your-domain.com
@@ -196,6 +200,7 @@ Add this configuration:
 ```
 
 Enable the site:
+
 ```bash
 # Enable the site
 sudo a2ensite meeting-insights-extractor.conf
@@ -220,12 +225,14 @@ sudo certbot --apache -d your-domain.com
 ### 🔄 Step 6: Auto-Deploy Script (Optional)
 
 Create a deployment script:
+
 ```bash
 # Create deploy script
 nano deploy.sh
 ```
 
 Add this content:
+
 ```bash
 #!/bin/bash
 
@@ -248,6 +255,7 @@ echo "Deployment completed successfully!"
 ```
 
 Make it executable:
+
 ```bash
 chmod +x deploy.sh
 ```
@@ -270,6 +278,7 @@ curl http://localhost:3000
 #### Issue: "Azure Configuration Required" Error
 
 **Check environment variables:**
+
 ```bash
 # Verify .env file exists and has correct values
 cat .env
@@ -279,6 +288,7 @@ node -e "console.log(process.env.AZURE_OPENAI_API_KEY)"
 ```
 
 **Solution:**
+
 ```bash
 # Make sure .env file is in project root
 ls -la .env
@@ -318,6 +328,7 @@ pm2 start ecosystem.config.js --update-env
 ### 📊 Monitoring
 
 #### Check Application Status:
+
 ```bash
 # PM2 status
 pm2 status
@@ -330,6 +341,7 @@ pm2 monit
 ```
 
 #### Check Nginx/Apache:
+
 ```bash
 # Nginx status
 sudo systemctl status nginx
@@ -345,6 +357,7 @@ sudo tail -f /var/log/apache2/error.log
 ### 🎯 Success Indicators
 
 Your deployment is successful when:
+
 - ✅ Application starts without errors
 - ✅ No "Azure Configuration Required" message
 - ✅ All three modes (Audio, Transcript, Zoom) are visible
@@ -370,6 +383,7 @@ pm2 restart meeting-insights-extractor
 ### 🆘 Need Help?
 
 If you encounter issues:
+
 1. **Check PM2 logs**: `pm2 logs meeting-insights-extractor`
 2. **Verify environment variables**: `cat .env`
 3. **Test locally**: `npm run dev`
