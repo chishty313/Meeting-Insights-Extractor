@@ -15,7 +15,7 @@ echo "📥 Pulling latest changes..."
 git pull origin main
 
 echo "🔍 Step 1: Testing .env file loading..."
-node test-env-loading.js
+node test-env-loading.cjs
 
 echo ""
 echo "🔍 Step 2: Checking current .env file..."
