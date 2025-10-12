@@ -4,16 +4,17 @@ An AI-powered tool that extracts structured insights from meeting audio files or
 
 ## ✨ Features
 
-- **Audio Processing**: Upload audio files and get AI-generated transcripts
-- **Transcript Mode**: Paste or upload existing transcripts with speaker labels
-- **Speaker Labeling**: Automatically identify and label speakers
-- **Structured Summaries**: Get organized insights with:
-  - Overview
-  - Key Takeaways
-  - Next Steps
-  - Key Topics
-- **Multiple AI Providers**: Support for Azure OpenAI and Google Gemini
-- **Custom System Prompts**: Tailor the AI's analysis to your needs
+- **🎵 Audio Processing**: Upload audio files and get AI-generated transcripts with timestamps
+- **📝 Transcript Mode**: Paste or upload existing transcripts with speaker labels and timestamps
+- **📹 Zoom Mode**: Directly fetch transcripts from Zoom meeting recordings
+- **🎯 Smart Trimming**: Remove unwanted sections from transcripts using natural language instructions
+- **👥 Speaker Labeling**: Automatically identify and label speakers
+- **📊 Structured Summaries**: Get organized insights with:
+  - Executive Overview
+  - To-Do List (Actions & Takeaways) organized by person
+- **🤖 AI-Powered**: Azure GPT-5 for optimal results
+- **⚙️ Custom System Prompts**: Tailor the AI's analysis to your needs
+- **📁 Multiple File Formats**: Support for .txt, .vtt, and audio files
 
 ## 🚀 Quick Start
 
@@ -42,9 +43,17 @@ An AI-powered tool that extracts structured insights from meeting audio files or
    
    Edit `.env` and add your API keys:
    ```env
+   # Required for all modes
    AZURE_OPENAI_API_KEY=your_azure_key_here
    AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments/your-deployment/chat/completions?api-version=2025-01-01-preview
+   
+   # Optional - for Gemini fallback
    GEMINI_API_KEY=your_gemini_key_here
+   
+   # Optional - for Zoom mode
+   ZOOM_CLIENT_ID=your_zoom_client_id_here
+   ZOOM_CLIENT_SECRET=your_zoom_client_secret_here
+   ZOOM_ACCOUNT_ID=your_zoom_account_id_here
    ```
 
 4. **Run the application:**
@@ -57,18 +66,30 @@ An AI-powered tool that extracts structured insights from meeting audio files or
 
 ## 🎵 Usage
 
-### Audio Mode
+### 🎵 Audio Mode
 1. Upload an audio file (MP3, WAV, etc.)
 2. Select your preferred transcription and summarization models
 3. Click "Process Audio"
-4. View the generated transcript and structured insights
+4. View the generated transcript with timestamps and structured insights
 
-### Transcript Mode
+### 📝 Transcript Mode
 1. Switch to "Transcript Mode"
-2. Paste your transcript or upload a .txt file
-3. Optionally include speaker labels (Speaker 1:, Speaker 2:, etc.)
+2. Paste your transcript or upload a .txt/.vtt file
+3. Optionally add trim instructions (e.g., "Remove sections from 5:30 to 8:45")
 4. Click "Process Transcript"
 5. View the structured insights
+
+### 📹 Zoom Mode
+1. Switch to "Zoom Mode"
+2. Enter your Zoom Meeting ID
+3. Click "Process Zoom Meeting"
+4. View the fetched transcript and structured insights
+
+### ✂️ Smart Trimming (Transcript Mode)
+- Add natural language instructions like:
+  - "Remove sections from 5:30 to 8:45"
+  - "Skip the introduction and conclusion"
+  - "Remove the technical discussion from 15:20 to 18:10"
 
 ## 🔧 Configuration
 
