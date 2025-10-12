@@ -5,7 +5,15 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => {
   // Load environment variables from .env files and system environment
   const env = loadEnv(mode, ".", "");
-
+  
+  // Debug logging
+  console.log('🔍 Vite Config Debug:');
+  console.log('  - Mode:', mode);
+  console.log('  - AZURE_OPENAI_API_KEY from env:', !!env.AZURE_OPENAI_API_KEY);
+  console.log('  - AZURE_OPENAI_ENDPOINT from env:', !!env.AZURE_OPENAI_ENDPOINT);
+  console.log('  - AZURE_OPENAI_API_KEY from process.env:', !!process.env.AZURE_OPENAI_API_KEY);
+  console.log('  - AZURE_OPENAI_ENDPOINT from process.env:', !!process.env.AZURE_OPENAI_ENDPOINT);
+  
   return {
     server: {
       port: 3000,

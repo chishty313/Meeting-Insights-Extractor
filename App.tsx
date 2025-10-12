@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { TRANSCRIPTION_MODELS, SUMMARY_MODELS } from "./constants";
 import type { SummaryResult, Model } from "./types";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
-import { isConfigured } from "./lib/env";
+import { isConfigured } from "./lib/config";
 import {
   summarizeAndExtractTasks as summarizeWithGemini,
   labelSpeakersWithGemini,
