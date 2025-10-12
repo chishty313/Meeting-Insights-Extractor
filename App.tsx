@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { TRANSCRIPTION_MODELS, SUMMARY_MODELS } from "./constants";
 import type { SummaryResult, Model } from "./types";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { isConfigured } from "./lib/env";
 import {
   summarizeAndExtractTasks as summarizeWithGemini,
   labelSpeakersWithGemini,
@@ -40,14 +41,10 @@ import {
   SelectValue,
 } from "./components/ui/select";
 
-// Check for API key configuration at the top level
-const isGeminiConfigured = !!process.env.API_KEY;
-const isAzureConfigured =
-  !!process.env.AZURE_OPENAI_API_KEY && !!process.env.AZURE_OPENAI_ENDPOINT;
-const isZoomConfigured =
-  !!process.env.ZOOM_CLIENT_ID &&
-  !!process.env.ZOOM_CLIENT_SECRET &&
-  !!process.env.ZOOM_ACCOUNT_ID;
+// Check for API key configuration using the environment utility
+const isGeminiConfigured = isConfigured.gemini;
+const isAzureConfigured = isConfigured.azure;
+const isZoomConfigured = isConfigured.zoom;
 
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
