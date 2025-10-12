@@ -41,6 +41,25 @@ export default defineConfig(({ mode }) => {
       "process.env.ZOOM_ACCOUNT_ID": JSON.stringify(
         env.ZOOM_ACCOUNT_ID || process.env.ZOOM_ACCOUNT_ID || ""
       ),
+      // Also define them as global variables for direct access
+      "__ENV_AZURE_OPENAI_API_KEY__": JSON.stringify(
+        env.AZURE_OPENAI_API_KEY || process.env.AZURE_OPENAI_API_KEY || ""
+      ),
+      "__ENV_AZURE_OPENAI_ENDPOINT__": JSON.stringify(
+        env.AZURE_OPENAI_ENDPOINT || process.env.AZURE_OPENAI_ENDPOINT || ""
+      ),
+      "__ENV_GEMINI_API_KEY__": JSON.stringify(
+        env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || ""
+      ),
+      "__ENV_ZOOM_CLIENT_ID__": JSON.stringify(
+        env.ZOOM_CLIENT_ID || process.env.ZOOM_CLIENT_ID || ""
+      ),
+      "__ENV_ZOOM_CLIENT_SECRET__": JSON.stringify(
+        env.ZOOM_CLIENT_SECRET || process.env.ZOOM_CLIENT_SECRET || ""
+      ),
+      "__ENV_ZOOM_ACCOUNT_ID__": JSON.stringify(
+        env.ZOOM_ACCOUNT_ID || process.env.ZOOM_ACCOUNT_ID || ""
+      ),
     },
     resolve: {
       alias: {
