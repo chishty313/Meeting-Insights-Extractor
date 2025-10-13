@@ -1,7 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { SummaryResult } from "../types";
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// Environment variable access that works in both client and server contexts
+const API_KEY = typeof window !== 'undefined' 
+  ? import.meta.env.VITE_GEMINI_API_KEY 
+  : process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 const responseSchema = {
