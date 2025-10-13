@@ -51,44 +51,8 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     define: {
-      // Use direct .env file loading as primary source, with fallbacks
-      "process.env.GEMINI_API_KEY": JSON.stringify(
-        directEnv.GEMINI_API_KEY || env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || ""
-      ),
-      "process.env.AZURE_OPENAI_API_KEY": JSON.stringify(
-        directEnv.AZURE_OPENAI_API_KEY || env.AZURE_OPENAI_API_KEY || process.env.AZURE_OPENAI_API_KEY || ""
-      ),
-      "process.env.AZURE_OPENAI_ENDPOINT": JSON.stringify(
-        directEnv.AZURE_OPENAI_ENDPOINT || env.AZURE_OPENAI_ENDPOINT || process.env.AZURE_OPENAI_ENDPOINT || ""
-      ),
-      "process.env.ZOOM_CLIENT_ID": JSON.stringify(
-        directEnv.ZOOM_CLIENT_ID || env.ZOOM_CLIENT_ID || process.env.ZOOM_CLIENT_ID || ""
-      ),
-      "process.env.ZOOM_CLIENT_SECRET": JSON.stringify(
-        directEnv.ZOOM_CLIENT_SECRET || env.ZOOM_CLIENT_SECRET || process.env.ZOOM_CLIENT_SECRET || ""
-      ),
-      "process.env.ZOOM_ACCOUNT_ID": JSON.stringify(
-        directEnv.ZOOM_ACCOUNT_ID || env.ZOOM_ACCOUNT_ID || process.env.ZOOM_ACCOUNT_ID || ""
-      ),
-      // Also define them as global variables for direct access
-      __ENV_AZURE_OPENAI_API_KEY__: JSON.stringify(
-        directEnv.AZURE_OPENAI_API_KEY || env.AZURE_OPENAI_API_KEY || process.env.AZURE_OPENAI_API_KEY || ""
-      ),
-      __ENV_AZURE_OPENAI_ENDPOINT__: JSON.stringify(
-        directEnv.AZURE_OPENAI_ENDPOINT || env.AZURE_OPENAI_ENDPOINT || process.env.AZURE_OPENAI_ENDPOINT || ""
-      ),
-      __ENV_GEMINI_API_KEY__: JSON.stringify(
-        directEnv.GEMINI_API_KEY || env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || ""
-      ),
-      __ENV_ZOOM_CLIENT_ID__: JSON.stringify(
-        directEnv.ZOOM_CLIENT_ID || env.ZOOM_CLIENT_ID || process.env.ZOOM_CLIENT_ID || ""
-      ),
-      __ENV_ZOOM_CLIENT_SECRET__: JSON.stringify(
-        directEnv.ZOOM_CLIENT_SECRET || env.ZOOM_CLIENT_SECRET || process.env.ZOOM_CLIENT_SECRET || ""
-      ),
-      __ENV_ZOOM_ACCOUNT_ID__: JSON.stringify(
-        directEnv.ZOOM_ACCOUNT_ID || env.ZOOM_ACCOUNT_ID || process.env.ZOOM_ACCOUNT_ID || ""
-      ),
+      // Vite automatically handles VITE_ prefixed variables
+      // No need to manually define them - Vite will inject them automatically
     },
     resolve: {
       alias: {

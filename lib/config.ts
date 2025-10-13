@@ -3,55 +3,24 @@
  * This provides a more reliable way to handle environment variables in production
  */
 
-// Direct environment variable access with fallbacks
+// Vite-compatible environment variable access
 export const config = {
-  // Azure OpenAI Configuration
+  // Azure OpenAI Configuration - Using Vite's import.meta.env
   azure: {
-    apiKey:
-      process.env.AZURE_OPENAI_API_KEY ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_AZURE_OPENAI_API_KEY__) ||
-      (typeof window !== "undefined" && (window as any).AZURE_OPENAI_API_KEY) ||
-      "",
-    endpoint:
-      process.env.AZURE_OPENAI_ENDPOINT ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_AZURE_OPENAI_ENDPOINT__) ||
-      (typeof window !== "undefined" &&
-        (window as any).AZURE_OPENAI_ENDPOINT) ||
-      "",
+    apiKey: import.meta.env.VITE_AZURE_OPENAI_API_KEY || "",
+    endpoint: import.meta.env.VITE_AZURE_OPENAI_ENDPOINT || "",
   },
 
   // Google Gemini Configuration
   gemini: {
-    apiKey:
-      process.env.GEMINI_API_KEY ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_GEMINI_API_KEY__) ||
-      (typeof window !== "undefined" && (window as any).GEMINI_API_KEY) ||
-      "",
+    apiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
   },
 
   // Zoom API Configuration
   zoom: {
-    clientId:
-      process.env.ZOOM_CLIENT_ID ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_ZOOM_CLIENT_ID__) ||
-      (typeof window !== "undefined" && (window as any).ZOOM_CLIENT_ID) ||
-      "",
-    clientSecret:
-      process.env.ZOOM_CLIENT_SECRET ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_ZOOM_CLIENT_SECRET__) ||
-      (typeof window !== "undefined" && (window as any).ZOOM_CLIENT_SECRET) ||
-      "",
-    accountId:
-      process.env.ZOOM_ACCOUNT_ID ||
-      (typeof window !== "undefined" &&
-        (window as any).__ENV_ZOOM_ACCOUNT_ID__) ||
-      (typeof window !== "undefined" && (window as any).ZOOM_ACCOUNT_ID) ||
-      "",
+    clientId: import.meta.env.VITE_ZOOM_CLIENT_ID || "",
+    clientSecret: import.meta.env.VITE_ZOOM_CLIENT_SECRET || "",
+    accountId: import.meta.env.VITE_ZOOM_ACCOUNT_ID || "",
   },
 };
 
