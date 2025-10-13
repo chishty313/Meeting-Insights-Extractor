@@ -1,12 +1,8 @@
 import type { SummaryResult } from "../types";
+import { getAzureConfig } from "../lib/env-utils";
 
-// Environment variable access that works in both client and server contexts
-const AZURE_API_KEY = typeof window !== 'undefined' 
-  ? import.meta.env.VITE_AZURE_OPENAI_API_KEY 
-  : process.env.VITE_AZURE_OPENAI_API_KEY || process.env.AZURE_OPENAI_API_KEY;
-const AZURE_ENDPOINT = typeof window !== 'undefined' 
-  ? import.meta.env.VITE_AZURE_OPENAI_ENDPOINT 
-  : process.env.VITE_AZURE_OPENAI_ENDPOINT || process.env.AZURE_OPENAI_ENDPOINT;
+// Get Azure configuration using the environment utility
+const { apiKey: AZURE_API_KEY, endpoint: AZURE_ENDPOINT } = getAzureConfig();
 
 // Helper to get the base URL (origin) from a potentially full endpoint URL.
 // This allows the user to provide either "https://name.openai.azure.com" or a full

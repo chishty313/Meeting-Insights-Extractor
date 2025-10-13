@@ -2,17 +2,10 @@
 // This service handles authentication and transcript retrieval from Zoom recordings
 
 import { parseVTTContent } from "./vttParser";
+import { getZoomConfig } from "../lib/env-utils";
 
-// Environment variable access that works in both client and server contexts
-const ZOOM_CLIENT_ID = typeof window !== 'undefined' 
-  ? import.meta.env.VITE_ZOOM_CLIENT_ID 
-  : process.env.VITE_ZOOM_CLIENT_ID || process.env.ZOOM_CLIENT_ID;
-const ZOOM_CLIENT_SECRET = typeof window !== 'undefined' 
-  ? import.meta.env.VITE_ZOOM_CLIENT_SECRET 
-  : process.env.VITE_ZOOM_CLIENT_SECRET || process.env.ZOOM_CLIENT_SECRET;
-const ZOOM_ACCOUNT_ID = typeof window !== 'undefined' 
-  ? import.meta.env.VITE_ZOOM_ACCOUNT_ID 
-  : process.env.VITE_ZOOM_ACCOUNT_ID || process.env.ZOOM_ACCOUNT_ID;
+// Get Zoom configuration using the environment utility
+const { clientId: ZOOM_CLIENT_ID, clientSecret: ZOOM_CLIENT_SECRET, accountId: ZOOM_ACCOUNT_ID } = getZoomConfig();
 const ZOOM_BASE_URL = "https://api.zoom.us/v2";
 
 // Interface for Zoom API responses
