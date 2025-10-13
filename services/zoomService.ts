@@ -3,9 +3,9 @@
 
 import { parseVTTContent } from "./vttParser";
 
-const ZOOM_CLIENT_ID = process.env.ZOOM_CLIENT_ID;
-const ZOOM_CLIENT_SECRET = process.env.ZOOM_CLIENT_SECRET;
-const ZOOM_ACCOUNT_ID = process.env.ZOOM_ACCOUNT_ID;
+const ZOOM_CLIENT_ID = import.meta.env.VITE_ZOOM_CLIENT_ID;
+const ZOOM_CLIENT_SECRET = import.meta.env.VITE_ZOOM_CLIENT_SECRET;
+const ZOOM_ACCOUNT_ID = import.meta.env.VITE_ZOOM_ACCOUNT_ID;
 const ZOOM_BASE_URL = "https://api.zoom.us/v2";
 
 // Interface for Zoom API responses

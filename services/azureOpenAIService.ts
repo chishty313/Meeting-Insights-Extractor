@@ -1,7 +1,7 @@
 import type { SummaryResult } from "../types";
 
-const AZURE_API_KEY = process.env.AZURE_OPENAI_API_KEY;
-const AZURE_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
+const AZURE_API_KEY = import.meta.env.VITE_AZURE_OPENAI_API_KEY;
+const AZURE_ENDPOINT = import.meta.env.VITE_AZURE_OPENAI_ENDPOINT;
 
 // Helper to get the base URL (origin) from a potentially full endpoint URL.
 // This allows the user to provide either "https://name.openai.azure.com" or a full
@@ -44,7 +44,7 @@ const AZURE_DEPLOYMENT_NAME = getDeploymentName(AZURE_ENDPOINT);
 
 if (!AZURE_API_KEY || !AZURE_BASE_URL) {
   console.warn(
-    "Azure OpenAI environment variables (AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT) are not set or invalid. Azure features will not work."
+    "Azure OpenAI environment variables (VITE_AZURE_OPENAI_API_KEY, VITE_AZURE_OPENAI_ENDPOINT) are not set or invalid. Azure features will not work."
   );
 }
 
