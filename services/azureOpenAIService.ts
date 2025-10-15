@@ -262,3 +262,60 @@ export const summarizeWithAzureOpenAI = async (
     );
   }
 };
+
+// Stage 1: Extract structured metadata from transcript
+export const extractMetadataWithAzureOpenAI = async (
+  transcript: string,
+  deployment: string
+): Promise<{
+  projectName: string;
+  department: string;
+  searchString: string;
+}> => {
+  if (!AZURE_API_KEY || !AZURE_BASE_URL) {
+    throw new Error("Azure OpenAI API key or endpoint is not configured.");
+  }
+
+  const deploymentName = AZURE_DEPLOYMENT_NAME || deployment || "gpt-5";
+  const chatEndpoint = `${AZURE_BASE_URL}/openai/deployments/${deploymentName}/chat/completions?api-version=2025-01-01-preview`;
+
+  const messages = [
+    {
+      role: "system",
+      content:
+        "Extract metadata from the meeting transcript. Return JSON with: projectName, department, searchString. Rules: Always provide non-empty values. Defaults: projectName='General Discussion', department='General', searchString should summarize ambiguous terms requiring context.",
+    },
+    { role: "user", content: transcript },
+  ];
+
+  const body = {
+    response_format: { type: "json_object" },
+    messages,
+  } as const;
+
+  const response = await fetch(chatEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": AZURE_API_KEY,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Azure Chat API request failed: ${response.statusText} - ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content || "{}";
+  const parsed = JSON.parse(content);
+
+  return {
+    projectName: parsed.projectName || "General Discussion",
+    department: parsed.department || "General",
+    searchString: parsed.searchString || transcript.slice(0, 200),
+  };
+};

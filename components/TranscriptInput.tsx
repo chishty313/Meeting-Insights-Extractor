@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { parseVTTContent } from "../services/vttParser";
+import { parsePdfFile } from "../services/pdfParser";
 
 interface TranscriptInputProps {
   value: string;
@@ -12,12 +13,29 @@ const TranscriptInput: React.FC<TranscriptInputProps> = ({
 }) => {
   const handleFile = useCallback(
     async (file: File) => {
+      if (!file) return;
+
+      // PDF handling
       if (
-        file &&
-        (file.type === "text/plain" ||
-          file.name.endsWith(".txt") ||
-          file.name.endsWith(".vtt") ||
-          file.type === "text/vtt")
+        file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf")
+      ) {
+        try {
+          const text = await parsePdfFile(file);
+          onChange(text);
+          return;
+        } catch (err) {
+          console.error("Error parsing PDF:", err);
+          return;
+        }
+      }
+
+      // TXT/VTT handling
+      if (
+        file.type === "text/plain" ||
+        file.name.endsWith(".txt") ||
+        file.name.endsWith(".vtt") ||
+        file.type === "text/vtt"
       ) {
         const text = await file.text();
 
@@ -60,24 +78,25 @@ const TranscriptInput: React.FC<TranscriptInputProps> = ({
         <label className="text-sm text-blue-600 hover:text-blue-700 hover:underline cursor-pointer transition-colors">
           <input
             type="file"
-            accept=".txt,.vtt,text/plain,text/vtt"
+            accept=".txt,.vtt,.pdf,text/plain,text/vtt,application/pdf"
             className="hidden"
             onChange={onFileChange}
           />
-          Upload .txt/.vtt
+          Upload .txt/.vtt/.pdf
         </label>
       </div>
       <textarea
         id="transcript-text"
         rows={10}
         className="w-full text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl p-4 border border-gray-300 bg-white text-gray-900 hover:border-blue-300 transition-colors resize-none"
-        placeholder="Paste your transcript here or upload .txt/.vtt files (optionally with Speaker 1:, Speaker 2: labels)"
+        placeholder="Paste your transcript here or upload .txt/.vtt/.pdf files (optionally with Speaker 1:, Speaker 2: labels)"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
       <p className="text-xs text-gray-500">
         Tip: Upload .vtt files from Zoom or other sources. If your transcript
-        already has speaker labels (e.g., "Speaker 1:"), we will keep them.
+        already has speaker labels (e.g., "Speaker 1:"), we will keep them. PDFs
+        are supported too.
       </p>
     </div>
   );

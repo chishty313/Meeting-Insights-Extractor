@@ -5,7 +5,11 @@ import { parseVTTContent } from "./vttParser";
 import { getZoomConfig } from "../lib/env-utils";
 
 // Get Zoom configuration using the environment utility
-const { clientId: ZOOM_CLIENT_ID, clientSecret: ZOOM_CLIENT_SECRET, accountId: ZOOM_ACCOUNT_ID } = getZoomConfig();
+const {
+  clientId: ZOOM_CLIENT_ID,
+  clientSecret: ZOOM_CLIENT_SECRET,
+  accountId: ZOOM_ACCOUNT_ID,
+} = getZoomConfig();
 const ZOOM_BASE_URL = "https://api.zoom.us/v2";
 
 // Interface for Zoom API responses

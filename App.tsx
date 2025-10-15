@@ -13,6 +13,7 @@ import {
   labelSpeakersWithAzureOpenAI,
 } from "./services/azureOpenAIService";
 import { getZoomTranscript, testZoomConnection } from "./services/zoomService";
+import { runCompleteRAGPipeline } from "./services/ragService";
 
 import Header from "./components/Header";
 import FileUpload from "./components/FileUpload";
@@ -438,8 +439,26 @@ TRANSCRIPT TO PROCESS:`);
 
     // 3. Speaker labeling (optional): transform transcript to Speaker N: ...
     // If transcript already seems labeled (contains 'Speaker N:'), skip labeling
-    const hasSpeakerLabels = /Speaker\s+\d+:/i.test(currentTranscript);
-    if (!hasSpeakerLabels) {
+    const hasNumericSpeakerLabels = /(^|\n)\s*Speaker\s+\d+\s*:/i.test(
+      currentTranscript
+    );
+    // Detect lines that look like human names followed by a colon, e.g., "John Doe:" or "Shoabur Rahman Chishty:"
+    // Heuristic: 2-4 words, letters/.'- with spaces, ending with a colon. Require at least two distinct names.
+    const nameLabelRegex =
+      /(^|\n)\s*([A-Za-z][A-Za-z.'\-]{1,}(?:\s+[A-Za-z][A-Za-z.'\-]{1,}){0,3})\s*:/g;
+    const foundNames = new Set<string>();
+    let m: RegExpExecArray | null;
+    while ((m = nameLabelRegex.exec(currentTranscript)) !== null) {
+      const label = (m[2] || "").trim();
+      if (!/^Speaker\s*\d+$/i.test(label)) {
+        foundNames.add(label);
+      }
+      if (foundNames.size >= 2) break;
+    }
+    const hasNamedSpeakerLabels = foundNames.size >= 2;
+
+    const shouldRelabel = !(hasNumericSpeakerLabels || hasNamedSpeakerLabels);
+    if (shouldRelabel) {
       setIsLabelingSpeakers(true);
       try {
         if (selectedSummaryModel.provider === "azure") {
@@ -459,10 +478,11 @@ TRANSCRIPT TO PROCESS:`);
       }
     }
 
-    // 3. Generate Summary and Tasks
+    // 3. Generate Summary and Tasks (4-Stage RAG Pipeline)
     setIsSummarizing(true);
     try {
-      let result;
+      console.log("🚀 Starting 4-Stage RAG Pipeline for transcript processing");
+
       // Combine system prompt with trim instructions if provided
       let enhancedSystemPrompt = systemPrompt;
       if (inputMode === "transcript" && trimInstructions.trim()) {
@@ -474,20 +494,21 @@ IMPORTANT: Before analyzing the transcript, please remove the following sections
 Please process only the remaining content after removing these sections.`;
       }
 
-      if (selectedSummaryModel.provider === "azure") {
-        result = await summarizeWithAzureOpenAI(
-          currentTranscript,
-          selectedSummaryModel.id,
-          enhancedSystemPrompt
-        );
-      } else {
-        // Fallback to simulated model if Azure is not available
-        result = await summarizeWithGemini(
-          currentTranscript,
-          selectedSummaryModel.id,
-          enhancedSystemPrompt
-        );
-      }
+      // Use the complete RAG pipeline instead of backend call
+      const ragResult = await runCompleteRAGPipeline(
+        currentTranscript,
+        enhancedSystemPrompt,
+        selectedSummaryModel.id
+      );
+
+      console.log("✅ RAG Pipeline completed successfully:", ragResult);
+
+      // Convert RAG result to expected format
+      const result = {
+        overview: ragResult.overview,
+        toDoList: ragResult.toDoList,
+      };
+
       setSummaryResult(result);
     } catch (err) {
       console.error(err);
