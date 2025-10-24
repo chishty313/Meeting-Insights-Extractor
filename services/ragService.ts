@@ -8,7 +8,7 @@ import {
 import { chunkTranscript } from "../backend/utils/textSplitter";
 
 // Backend API base URL
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3003";
 
 // Stage 1: Extract structured metadata from transcript
 export const stage1ExtractMetadata = async (
